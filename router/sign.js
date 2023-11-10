@@ -4,6 +4,10 @@ import { insertUser } from "../db/dbFunctions.js"
 import { selectUser } from "../db/dbFunctions.js"
 import { getFullUTCDate } from "../additionalFunction/additional.js"
 import bcrypt from "bcrypt"
+import jwt from "jsonwebtoken"
+import session from "express-session"
+
+
 sign.post("/up", async (req, res) => {
     const { firstName, lastName, userName, password, born, gender } = req.body
     if (firstName != "" && lastName != "" && born != "" && gender != "" && password != "") {
@@ -26,20 +30,29 @@ sign.post("/up", async (req, res) => {
             }
 
         }
-    }
-    else {
+    }else {
         res.sendStatus(400)
     }
 
 
 })
+
+sign.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true })); 
 sign.post("/in", async (req, res) => {
     const { userName, password } = req.body
     if (userName != "" && password != "") {
         const user = await selectUser("toDoAppDb", "users", { userName })
         if (user) {
             const isCompare = await bcrypt.compare(password, user.password)
-            isCompare ? res.send({ id: user._id }) : res.sendStatus(400)
+           if(isCompare){
+                const accessToken= jwt.sign({sub:user._id,userName: user.userName},'your-secret-key',{ expiresIn: '10h' })
+                req.session.accessToken = accessToken
+                req.session.userId = user._id
+            res.send({id:user._id,sssd: req.session})
+           } 
+           else{
+            res.sendStatus(400)
+           }
         }
         else {
             res.sendStatus(400)
@@ -52,3 +65,47 @@ sign.post("/in", async (req, res) => {
 
 
 })
+
+// passport.use(new LocalStrategy(
+//     (username, password, done) => {
+//       // Find the user in the MongoDB database
+//       const usersCollection = client.db('toDoAppDb').collection('users');
+  
+//       usersCollection.findOne({ userName: username, password: password }, (err, user) => {
+//         if (err) { return done(err); }
+//         if (!user) {
+//           return done(null, false, { message: 'Incorrect username or password' });
+//         }
+//         return done(null, user);
+//       });
+//     }
+//   ));
+
+// passport.serializeUser((user, done) => {
+//     done(null, user._id.toString());
+// });
+
+// passport.deserializeUser(async (id, done) => {
+//     try {
+//         const user = await selectUser("toDoAppDb", "users", { _id: new ObjectId(id) });
+//         console.log(user);
+//         done(null, user);
+//     } catch (error) {
+//         done(error, null);
+//     }
+// });
+
+
+// sign.post('/in',
+//     passport.authenticate('local', { successRedirect: '/dashboard', failureRedirect: '/' })
+// );
+// sign.get('/dashboard', isAuthenticated, (req, res) => {
+//     res.send(`Welcome  to the Dashboard!`);
+// });
+
+// function isAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) {
+//         return next();
+//     }
+//     res.redirect('/');
+// }
