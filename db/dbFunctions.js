@@ -12,8 +12,8 @@ export async function insertUser(dbName, collName, data) {
     process.on('SIGINT', cleanup)
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
-    const colletcion = db.collection(collName)
-    return await colletcion.insertOne(data)
+    const collection = db.collection(collName)
+    return await collection.insertOne(data)
 }
 export async function selectUser(dbName, collName, data) {
     await client.connect()
@@ -25,9 +25,12 @@ export async function selectUser(dbName, collName, data) {
     process.on('SIGINT', cleanup)
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
-    const colletcion = db.collection(collName)
-    return await colletcion.findOne(data)
+    const collection = db.collection(collName)
+    return await collection.findOne(data)
 }
+
+
+
 // To Do Database CRUD
 export async function insertToDo(dbName, collName, data) {
     await client.connect()
@@ -39,10 +42,10 @@ export async function insertToDo(dbName, collName, data) {
     process.on('SIGINT', cleanup)
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
-    const colletcion = db.collection(collName)
-    return await colletcion.insertOne(data)
+    const collection = db.collection(collName)
+    return await collection.insertOne(data)
 }
-export async function selectToDo(dbName, collName, query) {
+export async function selectToDoS(dbName, collName, query) {
     await client.connect()
 
     const cleanup = (e) => {
@@ -52,8 +55,8 @@ export async function selectToDo(dbName, collName, query) {
     process.on('SIGINT', cleanup)
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
-    const colletcion = db.collection(collName)
-    return await colletcion.find(query).toArray()
+    const collection = db.collection(collName)
+    return await collection.find(query).toArray()
 }
 
 export async function updateToDo(dbName, collName, query, newValue) {
@@ -66,8 +69,8 @@ export async function updateToDo(dbName, collName, query, newValue) {
     process.on('SIGINT', cleanup)
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
-    const colletcion = db.collection(collName)
-    return await colletcion.updateOne(query, newValue)
+    const collection = db.collection(collName)
+    return await collection.updateOne(query, newValue)
 }
 
 export async function deleteToDo(dbName, collName, query) {
@@ -80,6 +83,6 @@ export async function deleteToDo(dbName, collName, query) {
     process.on('SIGINT', cleanup)
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
-    const colletcion = db.collection(collName)
-    return await colletcion.deleteOne(query)
+    const collection = db.collection(collName)
+    return await collection.deleteOne(query)
 }

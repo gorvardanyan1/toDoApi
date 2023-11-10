@@ -5,7 +5,7 @@ import { selectUser } from "../db/dbFunctions.js"
 import { getFullUTCDate } from "../additionalFunction/additional.js"
 import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
-import session from "express-session"
+
 
 
 sign.post("/up", async (req, res) => {
@@ -37,7 +37,7 @@ sign.post("/up", async (req, res) => {
 
 })
 
-sign.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true })); 
+// sign.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true })); 
 sign.post("/in", async (req, res) => {
     const { userName, password } = req.body
     if (userName != "" && password != "") {
@@ -48,7 +48,7 @@ sign.post("/in", async (req, res) => {
                 const accessToken= jwt.sign({sub:user._id,userName: user.userName},'your-secret-key',{ expiresIn: '10h' })
                 req.session.accessToken = accessToken
                 req.session.userId = user._id
-            res.send({id:user._id,sssd: req.session})
+            res.send({id:user._id,sesion: req.session})
            } 
            else{
             res.sendStatus(400)
@@ -64,6 +64,12 @@ sign.post("/in", async (req, res) => {
     }
 
 
+})
+sign.get("/out", (req,res)=>{
+    req.session.accessToken = undefined
+    req.session.userId = undefined
+    console.log(req.session);
+    res.sendStatus(200)
 })
 
 // passport.use(new LocalStrategy(
