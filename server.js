@@ -16,4 +16,4 @@ app.get("/", async (req, res) => {
 })
 app.use("/sign", sign)
 
-app.listen(5000)
+app.listen(5000,()=>console.log("server listened port 5000"))
