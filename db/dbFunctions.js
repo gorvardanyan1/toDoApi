@@ -15,4 +15,16 @@ export async function insertUser(dbName, collName, data) {
     const colletcion = db.collection(collName)
     return await colletcion.insertOne(data)
 }
+export async function selectUser(dbName, collName, data) {
+    await client.connect()
 
+    const cleanup = (e) => {
+        client.close()
+        process.exit()
+    }
+    process.on('SIGINT', cleanup)
+    process.on('SIGTERM', cleanup)
+    const db = client.db(dbName)
+    const colletcion = db.collection(collName)
+    return await colletcion.findOne(data)
+}
