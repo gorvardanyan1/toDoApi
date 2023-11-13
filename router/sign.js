@@ -39,16 +39,18 @@ sign.post("/up", async (req, res) => {
 
 // sign.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true })); 
 sign.post("/in", async (req, res) => {
+    
     const { userName, password } = req.body
     if (userName != "" && password != "") {
         const user = await selectUser("toDoAppDb", "users", { userName })
         if (user) {
             const isCompare = await bcrypt.compare(password, user.password)
            if(isCompare){
-                const accessToken= jwt.sign({sub:user._id,userName: user.userName},'your-secret-key',{ expiresIn: '10h' })
+                const accessToken= jwt.sign({_id:user._id},'secret',{ expiresIn: '10h' })      
                 req.session.accessToken = accessToken
                 req.session.userId = user._id
-            res.send({id:user._id,sesion: req.session})
+                // res.cookie('accessToken', accessToken, { httpOnly: true, secure: false });
+            res.send({id:user._id})
            } 
            else{
             res.sendStatus(400)
