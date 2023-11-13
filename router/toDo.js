@@ -1,9 +1,10 @@
 import express from "express"
 import { deleteToDo, insertToDo, selectToDoS, updateToDo } from "../db/dbFunctions.js"
 import { getFullUTCDate } from "../additionalFunction/additional.js"
-import session from "express-session"
 import { ObjectId } from "mongodb"
+import jwt from "jsonwebtoken"
 export const toDos = express.Router()
+
 
 toDos.get("/", async (req, res) => {
     const userId = String(req.session.userId)
@@ -12,14 +13,17 @@ toDos.get("/", async (req, res) => {
 })
 
 toDos.post("/", async (req, res) => {
-    if (req.session.accessToken) {
+    const cookie = req.cookies['jwt']
+    if (cookie) {
+        const claims = jwt.verify(cookie, 'secret')
+
         const { title, description } = req.body
         const todoData = {
             title,
             description,
             isComplated: false,
             createdDateUTC: getFullUTCDate(),
-            parent_Id: req.session.userId
+            parent_Id: claims._id
         }
         try {
             await insertToDo("toDoAppDb", "toDoS", todoData)
@@ -27,7 +31,9 @@ toDos.post("/", async (req, res) => {
         } catch (err) {
             res.sendStatus(400)
         }
+
     }
+
     else {
         res.sendStatus(401)
     }
