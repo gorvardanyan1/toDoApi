@@ -47,10 +47,14 @@ sign.post("/in", async (req, res) => {
             const isCompare = await bcrypt.compare(password, user.password)
            if(isCompare){
                 const accessToken= jwt.sign({_id:user._id},'secret',{ expiresIn: '10h' })      
-                req.session.accessToken = accessToken
-                req.session.userId = user._id
-                // res.cookie('accessToken', accessToken, { httpOnly: true, secure: false });
-            res.send({id:user._id})
+                res.cookie('jwt', accessToken , {
+                    httpOnly: true,
+                    maxAge: 24 * 60 * 60 * 1000 // 1 day
+                })
+            
+                res.send({
+                    message: 'success'
+                })
            } 
            else{
             res.sendStatus(400)
