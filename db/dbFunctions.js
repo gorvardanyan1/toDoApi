@@ -1,6 +1,6 @@
 import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
 const url = process.env.DB_URL
-const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
+const client = new MongoClient(url, { serverApi: ServerApiVersion.v1 });
 
 export async function insertUser(dbName, collName, data) {
     await client.connect()

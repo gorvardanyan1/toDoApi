@@ -8,6 +8,7 @@ export const toDos = express.Router()
 
 toDos.get("/", async (req, res) => {
     const cookie = req.cookies['jwt']
+    console.log(cookie);
     if (cookie) {
         const claims = jwt.verify(cookie, process.env.SECRET_KEY)
         const todos = await selectToDoS("toDoAppDb", "toDoS", { parent_Id: claims._id })
