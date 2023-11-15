@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({
     credentials: true,
-    origin: ["https://to-do-next-iota.vercel.app","http://localhost:3000"]
+    origin: "*"
 }))
 app.get("/", async (req, res) => {
     const cookie = req.cookies['jwt']
