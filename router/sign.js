@@ -48,7 +48,9 @@ sign.post("/in", async (req, res) => {
                 const accessToken= jwt.sign({_id:user._id},process.env.SECRET_KEY,{ expiresIn: '10h' })      
                 res.cookie('jwt', accessToken , {
                     httpOnly: true,
-                    maxAge: 24 * 60 * 60 * 1000 // 1 day
+                    maxAge: 24 * 60 * 60 * 1000, // 1 day
+                    sameSite: 'None',
+                    secure: true, // This is required if your site is served over HTTPS
                 })
             
                 res.send({
