@@ -7,13 +7,13 @@ import jwt from "jsonwebtoken"
 import { selectUser } from "./db/dbFunctions.js"
 import { ObjectId } from "mongodb"
 const app = express()
-app.use(cors({ origin: 'https://to-do-next-iota.vercel.app', credentials: true }));
+// app.use(cors({ origin: 'https://to-do-next-iota.vercel.app', credentials: true }));
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({
     credentials: true,
-    origin: ["https://to-do-next-iota.vercel.app"]
+    origin: ["https://to-do-next-iota.vercel.app","http://localhost:3000"]
 }))
 app.get("/", async (req, res) => {
     const cookie = req.cookies['jwt']
