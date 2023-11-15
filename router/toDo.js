@@ -7,15 +7,18 @@ export const toDos = express.Router()
 
 
 toDos.get("/", async (req, res) => {
-    const userId = String(req.session.userId)
-    const todos = await selectToDoS("toDoAppDb", "toDoS", { parent_Id: userId })
-    res.send(todos)
+    const cookie = req.cookies['jwt']
+    if (cookie) {
+        const claims = jwt.verify(cookie, process.env.SECRET_KEY)
+        const todos = await selectToDoS("toDoAppDb", "toDoS", { parent_Id: claims._id })
+        res.send(todos)
+    }
 })
 
 toDos.post("/", async (req, res) => {
     const cookie = req.cookies['jwt']
     if (cookie) {
-        const claims = jwt.verify(cookie, 'secret')
+        const claims = jwt.verify(cookie, process.env.SECRET_KEY)
 
         const { title, description } = req.body
         const todoData = {

@@ -1,5 +1,5 @@
 import { MongoClient, ServerApiVersion, ObjectId } from "mongodb";
-const url = "mongodb://localhost:27017"
+const url = process.env.DB_URL
 const client = new MongoClient(url, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
 export async function insertUser(dbName, collName, data) {
@@ -13,6 +13,7 @@ export async function insertUser(dbName, collName, data) {
     process.on('SIGTERM', cleanup)
     const db = client.db(dbName)
     const collection = db.collection(collName)
+    collection.createIndex({ userName: 1 }, { unique: true })
     return await collection.insertOne(data)
 }
 export async function selectUser(dbName, collName, data) {

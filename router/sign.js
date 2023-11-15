@@ -26,7 +26,7 @@ sign.post("/up", async (req, res) => {
             res.sendStatus(200)
         } catch (error) {
             if (error.code === 11000) {
-                res.send({ errorMessage: "duplicate key error collection:" })
+                res.sendStatus(409)
             }
 
         }
@@ -37,7 +37,6 @@ sign.post("/up", async (req, res) => {
 
 })
 
-// sign.use(session({ secret: 'your-session-secret', resave: true, saveUninitialized: true })); 
 sign.post("/in", async (req, res) => {
     
     const { userName, password } = req.body
@@ -46,7 +45,7 @@ sign.post("/in", async (req, res) => {
         if (user) {
             const isCompare = await bcrypt.compare(password, user.password)
            if(isCompare){
-                const accessToken= jwt.sign({_id:user._id},'secret',{ expiresIn: '10h' })      
+                const accessToken= jwt.sign({_id:user._id},process.env.SECRET_KEY,{ expiresIn: '10h' })      
                 res.cookie('jwt', accessToken , {
                     httpOnly: true,
                     maxAge: 24 * 60 * 60 * 1000 // 1 day

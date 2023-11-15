@@ -20,7 +20,7 @@ app.get("/", async (req, res) => {
     if (cookie == undefined) {
         return res.sendStatus(401)
     }
-    const claims = jwt.verify(cookie, 'secret')
+    const claims = jwt.verify(cookie, process.env.SECRET_KEY)
 
     if (!claims) {
         return res.status(401).send({
@@ -33,4 +33,4 @@ app.get("/", async (req, res) => {
 app.use("/sign", sign)
 app.use("/todos", toDos)
 
-app.listen(5000, () => console.log("server listened port 5000"))
+app.listen(process.env.PORT, () => console.log("server listened port 5000"))
