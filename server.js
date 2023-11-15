@@ -13,7 +13,7 @@ app.use(express.urlencoded({ extended: true }))
 app.use(cookieParser())
 app.use(cors({
     credentials: true,
-    origin: "*"
+    origin: "http://localhost:3000"
 }))
 app.get("/", async (req, res) => {
     const cookie = req.cookies['jwt']
